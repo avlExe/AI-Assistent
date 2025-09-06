@@ -4,14 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
-    "export": "next build && next export",
+    "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "db:push": "prisma db push",
+    "db:push": "npx prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "db:studio": "npx prisma studio",
+    "postinstall": "npx prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -35,7 +34,6 @@
     "lucide-react": "^0.303.0",
     "next": "14.0.4",
     "next-auth": "^4.24.6",
-    "@next-auth/prisma-adapter": "^1.0.7",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",
@@ -52,7 +50,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.0.4",
     "postcss": "^8.4.32",
-    "prisma": "^5.7.1",
+    "prisma": "^5.22.0",
     "tailwindcss": "^3.4.0",
     "tsx": "^4.6.2",
     "typescript": "^5.3.3"

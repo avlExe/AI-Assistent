@@ -7,7 +7,6 @@ import { ThemeProvider } from '@/components/theme-provider'
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ai-assistent.vercel.app'),
   title: 'AI Помощник для Поступления | Умный выбор вуза и специальности',
   description: 'ИИ-помощник поможет выбрать подходящий вуз, проанализировать результаты ЕГЭ и получить персональные рекомендации по поступлению.',
   keywords: 'поступление, вуз, ЕГЭ, ОГЭ, ИИ помощник, выбор специальности, университет, колледж',

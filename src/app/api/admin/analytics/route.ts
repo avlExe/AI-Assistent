@@ -1,16 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
 
 // GET - получить аналитику
 export async function GET(request: NextRequest) {
   try {
+    // Проверяем, что мы не в процессе сборки
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
+
+    // Дополнительная проверка для Vercel build
+    if (process.env.VERCEL_ENV === 'preview' && !process.env.DATABASE_URL) {
+      return NextResponse.json({ error: 'Database not available in preview' }, { status: 503 })
+    }
+
     const session = await getServerSession(authOptions)
     
     if (!session || session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    // Динамический импорт Prisma
+    const { prisma } = await import('@/lib/prisma')
 
     const { searchParams } = new URL(request.url)
     const period = searchParams.get('period') || '30' // дней
@@ -97,26 +109,26 @@ export async function GET(request: NextRequest) {
       take: 20
     })
 
-    // Статистика по месяцам (для графиков)
+    // Статистика по месяцам (для графиков) - PostgreSQL версия
     const monthlyStats = await Promise.all([
       // Пользователи по месяцам
       prisma.$queryRaw`
         SELECT 
-          strftime('%Y-%m', createdAt) as month,
+          to_char(created_at, 'YYYY-MM') as month,
           COUNT(*) as count
-        FROM users 
-        WHERE createdAt >= date('now', '-12 months')
-        GROUP BY strftime('%Y-%m', createdAt)
+        FROM "User" 
+        WHERE created_at >= NOW() - INTERVAL '12 months'
+        GROUP BY to_char(created_at, 'YYYY-MM')
         ORDER BY month
       `,
       // Отчёты по месяцам
       prisma.$queryRaw`
         SELECT 
-          strftime('%Y-%m', createdAt) as month,
+          to_char(created_at, 'YYYY-MM') as month,
           COUNT(*) as count
-        FROM reports 
-        WHERE createdAt >= date('now', '-12 months')
-        GROUP BY strftime('%Y-%m', createdAt)
+        FROM "Report" 
+        WHERE created_at >= NOW() - INTERVAL '12 months'
+        GROUP BY to_char(created_at, 'YYYY-MM')
         ORDER BY month
       `
     ])

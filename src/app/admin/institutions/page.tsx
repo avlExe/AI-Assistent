@@ -472,7 +472,7 @@ export default function AdminInstitutionsPage() {
           setEditingInstitution(null)
         }}
         onSave={handleEditInstitution}
-        institution={editingInstitution}
+        institution={editingInstitution || undefined}
         loading={modalLoading}
       />
     </div>

@@ -505,7 +505,7 @@ export default function AdminProgramsPage() {
           setEditingProgram(null)
         }}
         onSave={handleEditProgram}
-        program={editingProgram}
+        program={editingProgram || undefined}
         institutions={institutions}
         loading={modalLoading}
       />

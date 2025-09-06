@@ -486,7 +486,7 @@ export default function AdminUsersPage() {
           setEditingUser(null)
         }}
         onSave={handleEditUser}
-        user={editingUser}
+        user={editingUser || undefined}
         loading={modalLoading}
       />
     </div>

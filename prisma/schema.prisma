@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  password    String
+  role        String   @default("STUDENT")
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Связи
+  achievements    Achievement[]
+  examResults     ExamResult[]
+  reports         Report[]
+  savedInstitutions SavedInstitution[]
+  parentRelation  Parent? @relation("StudentParent")
+  childRelation   Parent? @relation("ParentChild")
+  comments        Comment[]
+
+  @@map("users")
+}
+
+model Institution {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  type        String
+  direction   String
+  minScore    Int
+  website     String?
+  logo        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Связи
+  programs    Program[]
+  savedBy     SavedInstitution[]
+
+  @@map("institutions")
+}
+
+model Program {
+  id           String   @id @default(cuid())
+  name         String
+  description  String
+  faculty      String
+  requirements String
+  exams        String   // JSON string с экзаменами
+  institutionId String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Связи
+  institution Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+
+  @@map("programs")
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  recommendations String
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Связи
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  type        String
+  userId      String
+  createdAt   DateTime @default(now())
+
+  // Связи
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("achievements")
+}
+
+model ExamResult {
+  id       String @id @default(cuid())
+  subject  String
+  score    Int
+  examType String
+  userId   String
+  date     DateTime @default(now())
+
+  // Связи
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("exam_results")
+}
+
+model Parent {
+  id        String @id @default(cuid())
+  parentId  String @unique
+  studentId String @unique
+  createdAt DateTime @default(now())
+
+  // Связи
+  parent  User @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+  student User @relation("StudentParent", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("parents")
+}
+
+model SavedInstitution {
+  id            String @id @default(cuid())
+  userId        String
+  institutionId String
+  createdAt     DateTime @default(now())
+
+  // Связи
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  institution Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, institutionId])
+  @@map("saved_institutions")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  // Связи
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+// Note: SQLite doesn't support enums, using String fields instead

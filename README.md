@@ -166,3 +166,4 @@ MIT License - см. файл [LICENSE](LICENSE)
 
 **Сделано с ❤️ для будущих студентов**
 
+"# AI-Assistent" 

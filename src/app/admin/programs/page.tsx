@@ -505,7 +505,14 @@ export default function AdminProgramsPage() {
           setEditingProgram(null)
         }}
         onSave={handleEditProgram}
-        program={editingProgram || undefined}
+        program={editingProgram ? {
+          name: editingProgram.name,
+          description: editingProgram.description,
+          faculty: editingProgram.faculty,
+          requirements: editingProgram.requirements,
+          exams: JSON.parse(editingProgram.exams || '[]'),
+          institutionId: editingProgram.institutionId
+        } : undefined}
         institutions={institutions}
         loading={modalLoading}
       />

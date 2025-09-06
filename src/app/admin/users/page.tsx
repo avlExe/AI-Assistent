@@ -486,7 +486,12 @@ export default function AdminUsersPage() {
           setEditingUser(null)
         }}
         onSave={handleEditUser}
-        user={editingUser || undefined}
+        user={editingUser ? {
+          name: editingUser.name,
+          email: editingUser.email,
+          password: '', // Пустой пароль при редактировании
+          role: editingUser.role
+        } : undefined}
         loading={modalLoading}
       />
     </div>

@@ -472,7 +472,15 @@ export default function AdminInstitutionsPage() {
           setEditingInstitution(null)
         }}
         onSave={handleEditInstitution}
-        institution={editingInstitution || undefined}
+        institution={editingInstitution ? {
+          name: editingInstitution.name,
+          description: editingInstitution.description,
+          type: editingInstitution.type,
+          direction: editingInstitution.direction,
+          minScore: editingInstitution.minScore,
+          website: editingInstitution.website || '',
+          logo: editingInstitution.logo || ''
+        } : undefined}
         loading={modalLoading}
       />
     </div>

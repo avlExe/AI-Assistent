@@ -43,7 +43,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
-          avatar: user.avatar,
+          avatar: user.avatar || undefined,
         }
       }
     })
@@ -70,6 +70,5 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/auth/login',
-    signUp: '/auth/register',
   }
 }

@@ -1,39 +1,34 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  name        String
-  password    String
-  role        String   @default("STUDENT")
-  avatar      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Связи
-  achievements    Achievement[]
-  examResults     ExamResult[]
-  reports         Report[]
+  id                String             @id @default(cuid())
+  email             String             @unique
+  name              String
+  password          String
+  role              String             @default("STUDENT")
+  avatar            String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  achievements      Achievement[]
+  comments          Comment[]
+  examResults       ExamResult[]
+  childRelation     Parent?            @relation("ParentChild")
+  parentRelation    Parent?            @relation("StudentParent")
+  reports           Report[]
   savedInstitutions SavedInstitution[]
-  parentRelation  Parent? @relation("StudentParent")
-  childRelation   Parent? @relation("ParentChild")
-  comments        Comment[]
 
   @@map("users")
 }
 
 model Institution {
-  id          String   @id @default(cuid())
+  id          String             @id @default(cuid())
   name        String
   description String
   type        String
@@ -41,10 +36,8 @@ model Institution {
   minScore    Int
   website     String?
   logo        String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Связи
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   programs    Program[]
   savedBy     SavedInstitution[]
 
@@ -52,33 +45,29 @@ model Institution {
 }
 
 model Program {
-  id           String   @id @default(cuid())
-  name         String
-  description  String
-  faculty      String
-  requirements String
-  exams        String   // JSON string с экзаменами
+  id            String      @id @default(cuid())
+  name          String
+  description   String
+  faculty       String
+  requirements  String
+  exams         String
   institutionId String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Связи
-  institution Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
 
   @@map("programs")
 }
 
 model Report {
-  id          String   @id @default(cuid())
-  title       String
-  content     String
+  id              String   @id @default(cuid())
+  title           String
+  content         String
   recommendations String
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Связи
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("reports")
 }
@@ -90,49 +79,41 @@ model Achievement {
   type        String
   userId      String
   createdAt   DateTime @default(now())
-
-  // Связи
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("achievements")
 }
 
 model ExamResult {
-  id       String @id @default(cuid())
+  id       String   @id @default(cuid())
   subject  String
   score    Int
   examType String
   userId   String
   date     DateTime @default(now())
-
-  // Связи
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("exam_results")
 }
 
 model Parent {
-  id        String @id @default(cuid())
-  parentId  String @unique
-  studentId String @unique
+  id        String   @id @default(cuid())
+  parentId  String   @unique
+  studentId String   @unique
   createdAt DateTime @default(now())
-
-  // Связи
-  parent  User @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
-  student User @relation("StudentParent", fields: [studentId], references: [id], onDelete: Cascade)
+  parent    User     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+  student   User     @relation("StudentParent", fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("parents")
 }
 
 model SavedInstitution {
-  id            String @id @default(cuid())
+  id            String      @id @default(cuid())
   userId        String
   institutionId String
-  createdAt     DateTime @default(now())
-
-  // Связи
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  institution Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, institutionId])
   @@map("saved_institutions")
@@ -143,11 +124,7 @@ model Comment {
   content   String
   userId    String
   createdAt DateTime @default(now())
-
-  // Связи
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("comments")
 }
-
-// Note: SQLite doesn't support enums, using String fields instead

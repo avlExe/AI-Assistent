@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
@@ -102,7 +102,7 @@ model Parent {
   studentId String   @unique
   createdAt DateTime @default(now())
   parent    User     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
-  student   User     @relation("StudentParent", fields: [studentId], references: [id], onDelete: Cascade)
+  student   User     @relation("ParentChild", fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("parents")
 }

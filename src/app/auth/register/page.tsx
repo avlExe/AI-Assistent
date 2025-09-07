@@ -128,7 +128,7 @@ export default function RegisterPage() {
           variant="ghost"
           size="sm"
           onClick={() => router.push('/')}
-          className="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-300"
+          className="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-200"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Назад
@@ -147,7 +147,7 @@ export default function RegisterPage() {
 
         {/* Logo */}
         <div className="text-center mb-8 animate-fade-in-up-delayed">
-          <Link href="/" className="inline-flex items-center space-x-2 hover:scale-105 transition-transform duration-300">
+          <Link href="/" className="inline-flex items-center space-x-2 hover:scale-105 transition-transform duration-200">
             <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
               <Brain className="w-7 h-7 text-white" />
             </div>
@@ -155,7 +155,7 @@ export default function RegisterPage() {
           </Link>
         </div>
 
-        <NeomorphicCard className="hover:shadow-2xl transition-all duration-500 animate-fade-in-up-delayed">
+        <NeomorphicCard className="hover:shadow-2xl transition-all duration-300 animate-fade-in-up-delayed">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold">Регистрация</CardTitle>
             <CardDescription>
@@ -176,7 +176,7 @@ export default function RegisterPage() {
                   Имя
                 </label>
                 <div className="relative group">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-400 transition-colors duration-300" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-400 transition-colors duration-200" />
                   <NeomorphicInput
                     id="name"
                     type="text"
@@ -184,7 +184,7 @@ export default function RegisterPage() {
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
                     required
-                    className="pl-10 hover:shadow-lg focus:shadow-xl focus:shadow-blue-500/20 transition-all duration-300"
+                    className="pl-10 hover:shadow-lg focus:shadow-xl focus:shadow-blue-500/20 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -195,7 +195,7 @@ export default function RegisterPage() {
                   Email
                 </label>
                 <div className="relative group">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-purple-400 transition-colors duration-300" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-purple-400 transition-colors duration-200" />
                   <NeomorphicInput
                     id="email"
                     type="email"
@@ -203,7 +203,7 @@ export default function RegisterPage() {
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     required
-                    className="pl-10 hover:shadow-lg focus:shadow-xl focus:shadow-purple-500/20 transition-all duration-300"
+                    className="pl-10 hover:shadow-lg focus:shadow-xl focus:shadow-purple-500/20 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -217,7 +217,7 @@ export default function RegisterPage() {
                   id="role"
                   value={formData.role}
                   onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as 'STUDENT' | 'PARENT' }))}
-                  className="w-full h-12 rounded-xl bg-gray-800 border border-gray-600 px-4 py-3 text-sm text-gray-200 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
+                  className="w-full h-12 rounded-xl bg-gray-800 border border-gray-600 px-4 py-3 text-sm text-gray-200 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-200"
                 >
                   <option value="STUDENT" className="bg-gray-800 text-gray-200">Ученик</option>
                   <option value="PARENT" className="bg-gray-800 text-gray-200">Родитель</option>
@@ -232,7 +232,7 @@ export default function RegisterPage() {
                 <div className="relative group">
                   <Lock className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-${
                     formData.password.length === 0 ? 'blue' : getPasswordStrength(formData.password).color
-                  }-400 transition-colors duration-300`} />
+                  }-400 transition-colors duration-200`} />
                   <NeomorphicInput
                     id="password"
                     type={showPassword ? 'text' : 'password'}
@@ -240,7 +240,7 @@ export default function RegisterPage() {
                     value={formData.password}
                     onChange={(e) => handleInputChange('password', e.target.value)}
                     required
-                    className={`pl-10 pr-10 hover:shadow-lg focus:shadow-xl transition-all duration-300 ${
+                    className={`pl-10 pr-10 hover:shadow-lg focus:shadow-xl transition-all duration-200 ${
                       formData.password.length === 0
                         ? 'border-blue-400 focus:border-blue-400 focus:shadow-blue-500/20'
                         : getPasswordStrength(formData.password).color === 'red'
@@ -255,7 +255,7 @@ export default function RegisterPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-${
                       formData.password.length === 0 ? 'blue' : getPasswordStrength(formData.password).color
-                    }-400 transition-colors duration-300`}
+                    }-400 transition-colors duration-200`}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -305,7 +305,7 @@ export default function RegisterPage() {
                       : formData.confirmPassword.length > 0 && formData.password === formData.confirmPassword
                       ? 'green'
                       : 'blue'
-                  }-400 transition-colors duration-300`} />
+                  }-400 transition-colors duration-200`} />
                   <NeomorphicInput
                     id="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
@@ -313,7 +313,7 @@ export default function RegisterPage() {
                     value={formData.confirmPassword}
                     onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                     required
-                    className={`pl-10 pr-10 hover:shadow-lg focus:shadow-xl transition-all duration-300 ${
+                    className={`pl-10 pr-10 hover:shadow-lg focus:shadow-xl transition-all duration-200 ${
                       formData.confirmPassword.length > 0 && formData.password !== formData.confirmPassword
                         ? 'border-red-400 focus:border-red-400 focus:shadow-red-500/20'
                         : formData.confirmPassword.length > 0 && formData.password === formData.confirmPassword
@@ -330,7 +330,7 @@ export default function RegisterPage() {
                         : formData.confirmPassword.length > 0 && formData.password === formData.confirmPassword
                         ? 'green'
                         : 'blue'
-                    }-400 transition-colors duration-300`}
+                    }-400 transition-colors duration-200`}
                   >
                     {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -351,7 +351,7 @@ export default function RegisterPage() {
 
               <Button
                 type="submit"
-                className="w-full h-12 text-base font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl animate-fade-in-up-delayed-7"
+                className="w-full h-12 text-base font-semibold hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl animate-fade-in-up-delayed-7"
                 variant="gradient"
                 disabled={isLoading}
               >
@@ -369,7 +369,7 @@ export default function RegisterPage() {
             <div className="mt-6 text-center animate-fade-in-up-delayed-8">
               <p className="text-sm text-gray-300">
                 Уже есть аккаунт?{' '}
-                <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium hover:underline transition-all duration-300">
+                <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium hover:underline transition-all duration-200">
                   Войти
                 </Link>
               </p>

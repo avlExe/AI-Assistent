@@ -56,7 +56,7 @@ export default function LoginPage() {
           variant="ghost"
           size="sm"
           onClick={() => router.back()}
-          className="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-300"
+          className="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-200"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Назад

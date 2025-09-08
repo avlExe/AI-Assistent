@@ -56,7 +56,7 @@ export default function LoginPage() {
           variant="ghost"
           size="sm"
           onClick={() => router.back()}
-          className="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-300"
+          className="text-gray-300 hover:text-white hover:bg-gray-800/50 transition-all duration-200"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Назад
@@ -67,7 +67,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
 
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 animate-slide-up-fast">
           <Link href="/" className="inline-flex items-center space-x-2">
             <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
               <Brain className="w-7 h-7 text-white" />
@@ -76,7 +76,7 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-8">
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-8 animate-scale-in-fast">
           <CardHeader className="text-center pb-6">
             <CardTitle className="text-3xl font-bold gradient-text mb-2">Вход в систему</CardTitle>
             <CardDescription className="text-gray-600 dark:text-gray-300">
@@ -91,7 +91,7 @@ export default function LoginPage() {
                 </div>
               )}
 
-              <div className="space-y-3">
+              <div className="space-y-3 animate-slide-up-fast-delay-1">
                 <label htmlFor="email" className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center">
                   <Mail className="w-4 h-4 mr-2" />
                   Email
@@ -106,7 +106,7 @@ export default function LoginPage() {
                 />
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3 animate-slide-up-fast-delay-2">
                 <label htmlFor="password" className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center">
                   <Lock className="w-4 h-4 mr-2" />
                   Пароль
@@ -133,7 +133,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full h-12 text-base font-semibold"
+                className="w-full h-12 text-base font-semibold animate-slide-up-fast-delay-2"
                 variant="gradient"
                 disabled={isLoading}
               >
@@ -148,7 +148,7 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center animate-slide-up-fast-delay-2">
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Нет аккаунта?{' '}
                 <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
@@ -158,7 +158,7 @@ export default function LoginPage() {
             </div>
 
             {/* Demo accounts */}
-            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg animate-slide-up-fast-delay-2">
               <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Демо-аккаунты:
               </p>

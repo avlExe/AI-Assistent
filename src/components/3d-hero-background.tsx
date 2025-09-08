@@ -23,7 +23,7 @@ export default function ThreeDHeroBackground() {
     // Инициализация
     const init = () => {
       resizeCanvas()
-      animate()
+      animate(0) // Передаем 0 как начальное время
     }
 
     // Простые частицы

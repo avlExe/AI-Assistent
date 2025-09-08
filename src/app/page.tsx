@@ -357,8 +357,17 @@ export default function HomePage() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="relative py-20 px-4">
-        <div className="absolute inset-0 bg-slate-800/30 backdrop-blur-sm"></div>
+      <section id="about" className="relative py-20 px-4 border-t border-b border-slate-700/30">
+        <div className="absolute inset-0 bg-slate-800/60 backdrop-blur-md"></div>
+        
+        {/* Анимированные светящиеся элементы для секции "О проекте" */}
+        <div className="absolute top-1/4 left-1/6 w-32 h-32 bg-blue-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.5s'}}></div>
+        <div className="absolute top-1/3 right-1/6 w-28 h-28 bg-purple-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.2s'}}></div>
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-cyan-500/25 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.8s'}}></div>
+        <div className="absolute top-2/3 right-1/3 w-36 h-36 bg-pink-500/25 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.8s'}}></div>
+        <div className="absolute top-1/5 left-1/2 w-20 h-20 bg-emerald-500/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '2.1s'}}></div>
+        <div className="absolute top-3/4 right-1/5 w-30 h-30 bg-orange-500/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.3s'}}></div>
+        
         <div className="container mx-auto text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
             О проекте
@@ -375,6 +384,15 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="relative py-20 px-4">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-purple-600/80 backdrop-blur-sm"></div>
+        
+        {/* Анимированные светящиеся элементы для CTA секции */}
+        <div className="absolute top-1/4 left-1/5 w-28 h-28 bg-purple-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.7s'}}></div>
+        <div className="absolute top-1/3 right-1/5 w-32 h-32 bg-pink-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
+        <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-emerald-500/25 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.9s'}}></div>
+        <div className="absolute top-2/3 right-1/4 w-30 h-30 bg-orange-500/25 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2.0s'}}></div>
+        <div className="absolute top-1/6 left-1/2 w-26 h-26 bg-violet-500/25 rounded-full blur-xl animate-pulse" style={{animationDelay: '1.1s'}}></div>
+        <div className="absolute top-3/4 right-1/3 w-22 h-22 bg-rose-500/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.4s'}}></div>
+        
         <div className="container mx-auto text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
             Готовы найти свой идеальный вуз?

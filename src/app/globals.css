@@ -122,6 +122,24 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+/* Performance optimizations */
+.animate-pulse {
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+.backdrop-blur-sm,
+.backdrop-blur-md,
+.backdrop-blur-xl {
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+}
+
+.hover\:scale-105:hover {
+  will-change: transform;
+  transform: translateZ(0) scale(1.05);
+}
+
 .float-3d {
   animation: float-3d 6s ease-in-out infinite;
 }

@@ -38,7 +38,7 @@ export default function ThreeDHeroBackground() {
     }> = []
 
     // Создание частиц
-           for (let i = 0; i < 100; i++) {
+           for (let i = 0; i < 40; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -50,19 +50,34 @@ export default function ThreeDHeroBackground() {
       })
     }
 
+    // Переменная для контроля FPS
+    let lastTime = 0
+    const targetFPS = 30
+    const frameInterval = 1000 / targetFPS
+
     // Анимация
-    const animate = () => {
+    const animate = (currentTime: number) => {
+      // Ограничиваем FPS для лучшей производительности
+      if (currentTime - lastTime < frameInterval) {
+        animationId = requestAnimationFrame(animate)
+        return
+      }
+      lastTime = currentTime
+
       // Очистка
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Градиентный фон
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
-      gradient.addColorStop(0, 'rgba(15, 23, 42, 0.4)') // Более прозрачный
-      gradient.addColorStop(0.5, 'rgba(30, 41, 59, 0.2)') // Более прозрачный
-      gradient.addColorStop(1, 'rgba(15, 23, 42, 0.4)') // Более прозрачный
-      
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      // Градиентный фон (рисуем только если изменился размер)
+      if (!canvas.dataset.gradientCached) {
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
+        gradient.addColorStop(0, 'rgba(15, 23, 42, 0.4)')
+        gradient.addColorStop(0.5, 'rgba(30, 41, 59, 0.2)')
+        gradient.addColorStop(1, 'rgba(15, 23, 42, 0.4)')
+        
+        ctx.fillStyle = gradient
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        canvas.dataset.gradientCached = 'true'
+      }
 
       // Обновление и отрисовка частиц
       particles.forEach((particle, index) => {
@@ -74,28 +89,16 @@ export default function ThreeDHeroBackground() {
         if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
         if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
 
-        // Пульсация размера
-        const pulse = Math.sin(Date.now() * 0.001 + index) * 0.5 + 1
+        // Упрощенная пульсация
+        const pulse = Math.sin(currentTime * 0.0005 + index) * 0.3 + 0.7
         const currentSize = particle.size * pulse
 
-        // Отрисовка частицы
-        ctx.save()
-        ctx.globalAlpha = particle.opacity
+        // Упрощенная отрисовка частицы
+        ctx.globalAlpha = particle.opacity * 0.6
         ctx.fillStyle = particle.color
-        
-        // Создание градиента для частицы
-        const particleGradient = ctx.createRadialGradient(
-          particle.x, particle.y, 0,
-          particle.x, particle.y, currentSize * 2
-        )
-        particleGradient.addColorStop(0, particle.color)
-        particleGradient.addColorStop(1, 'transparent')
-        
-        ctx.fillStyle = particleGradient
         ctx.beginPath()
-        ctx.arc(particle.x, particle.y, currentSize * 2, 0, Math.PI * 2)
+        ctx.arc(particle.x, particle.y, currentSize, 0, Math.PI * 2)
         ctx.fill()
-        ctx.restore()
       })
 
 
@@ -175,52 +178,39 @@ export default function ThreeDHeroBackground() {
       ctx.arc(orb6X, orb6Y, 70, 0, Math.PI * 2)
       ctx.fill()
 
-      // Дополнительные орбы для плотности в хедере
+      // Дополнительный орб для плотности в хедере (только один)
       // Орб 7 - в верхней части
       const orb7X = canvas.width * 0.7 + Math.sin(time * 0.9) * 20
       const orb7Y = canvas.height * 0.15 + Math.cos(time * 0.8) * 18
       const orb7Gradient = ctx.createRadialGradient(orb7X, orb7Y, 0, orb7X, orb7Y, 85)
-      orb7Gradient.addColorStop(0, 'rgba(59, 130, 246, 0.12)')
-      orb7Gradient.addColorStop(0.5, 'rgba(59, 130, 246, 0.05)')
+      orb7Gradient.addColorStop(0, 'rgba(59, 130, 246, 0.08)')
+      orb7Gradient.addColorStop(0.5, 'rgba(59, 130, 246, 0.03)')
       orb7Gradient.addColorStop(1, 'transparent')
       ctx.fillStyle = orb7Gradient
       ctx.beginPath()
       ctx.arc(orb7X, orb7Y, 85, 0, Math.PI * 2)
       ctx.fill()
 
-      // Орб 8 - в верхней части
-      const orb8X = canvas.width * 0.15 + Math.sin(time * 1.0) * 22
-      const orb8Y = canvas.height * 0.25 + Math.cos(time * 0.9) * 16
-      const orb8Gradient = ctx.createRadialGradient(orb8X, orb8Y, 0, orb8X, orb8Y, 75)
-      orb8Gradient.addColorStop(0, 'rgba(139, 92, 246, 0.1)')
-      orb8Gradient.addColorStop(0.5, 'rgba(139, 92, 246, 0.04)')
-      orb8Gradient.addColorStop(1, 'transparent')
-      ctx.fillStyle = orb8Gradient
-      ctx.beginPath()
-      ctx.arc(orb8X, orb8Y, 75, 0, Math.PI * 2)
-      ctx.fill()
-
-      // Орб 9 - в верхней части
-      const orb9X = canvas.width * 0.85 + Math.sin(time * 1.1) * 19
-      const orb9Y = canvas.height * 0.35 + Math.cos(time * 1.0) * 14
-      const orb9Gradient = ctx.createRadialGradient(orb9X, orb9Y, 0, orb9X, orb9Y, 65)
-      orb9Gradient.addColorStop(0, 'rgba(6, 182, 212, 0.08)')
-      orb9Gradient.addColorStop(0.5, 'rgba(6, 182, 212, 0.03)')
-      orb9Gradient.addColorStop(1, 'transparent')
-      ctx.fillStyle = orb9Gradient
-      ctx.beginPath()
-      ctx.arc(orb9X, orb9Y, 65, 0, Math.PI * 2)
-      ctx.fill()
-
       animationId = requestAnimationFrame(animate)
     }
 
+    // Debounced resize function
+    let resizeTimeout: NodeJS.Timeout
+    const debouncedResize = () => {
+      clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(() => {
+        resizeCanvas()
+        canvas.dataset.gradientCached = '' // Сброс кэша градиента
+      }, 100)
+    }
+
     init()
-    window.addEventListener('resize', resizeCanvas)
+    window.addEventListener('resize', debouncedResize)
 
     return () => {
       cancelAnimationFrame(animationId)
-      window.removeEventListener('resize', resizeCanvas)
+      clearTimeout(resizeTimeout)
+      window.removeEventListener('resize', debouncedResize)
     }
   }, [])
 

@@ -52,13 +52,10 @@ export default function HomePage() {
                  <div className="absolute top-1/6 right-1/3 w-34 h-34 bg-lime-500/35 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2.5s'}}></div>
                  <div className="absolute top-1/5 left-1/3 w-42 h-42 bg-sky-500/40 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.9s'}}></div>
                  
-                 {/* Дополнительные мелкие элементы для плотности в хедере */}
-                 <div className="absolute top-1/12 left-1/4 w-24 h-24 bg-cyan-400/30 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                 <div className="absolute top-1/10 right-1/4 w-28 h-28 bg-purple-400/30 rounded-full blur-xl animate-pulse" style={{animationDelay: '1.2s'}}></div>
-                 <div className="absolute top-1/8 left-1/2 w-20 h-20 bg-blue-400/30 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.6s'}}></div>
-                 <div className="absolute top-1/9 right-1/2 w-26 h-26 bg-pink-400/30 rounded-full blur-xl animate-pulse" style={{animationDelay: '1.7s'}}></div>
-                 <div className="absolute top-1/11 left-2/3 w-22 h-22 bg-emerald-400/25 rounded-full blur-xl animate-pulse" style={{animationDelay: '2.8s'}}></div>
-                 <div className="absolute top-1/13 right-2/3 w-30 h-30 bg-orange-400/25 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                 {/* Дополнительные мелкие элементы для плотности в хедере (уменьшено) */}
+                 <div className="absolute top-1/12 left-1/4 w-24 h-24 bg-cyan-400/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                 <div className="absolute top-1/10 right-1/4 w-28 h-28 bg-purple-400/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '1.2s'}}></div>
+                 <div className="absolute top-1/8 left-1/2 w-20 h-20 bg-blue-400/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.6s'}}></div>
       </div>
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-slate-900/90 backdrop-blur-xl border-b border-slate-700/40">

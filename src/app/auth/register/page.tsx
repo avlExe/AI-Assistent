@@ -123,7 +123,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Back Button - Top Left */}
-      <div className="absolute top-6 left-6 z-20 animate-fade-in-up">
+      <div className="absolute top-6 left-6 z-20">
         <Button
           variant="ghost"
           size="sm"
@@ -137,16 +137,16 @@ export default function RegisterPage() {
 
       {/* Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-xl animate-float"></div>
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-2xl animate-float-delayed"></div>
-        <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 rounded-full blur-3xl animate-pulse-slow transform -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-xl"></div>
+        <div className="absolute bottom-20 right-10 w-32 h-32 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
       </div>
 
       <div className="min-h-screen flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md relative z-10">
 
         {/* Logo */}
-        <div className="text-center mb-8 animate-fade-in-up-delayed">
+        <div className="text-center mb-8 animate-slide-up-fast">
           <Link href="/" className="inline-flex items-center space-x-2 hover:scale-105 transition-transform duration-200">
             <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
               <Brain className="w-7 h-7 text-white" />
@@ -155,7 +155,7 @@ export default function RegisterPage() {
           </Link>
         </div>
 
-        <NeomorphicCard className="hover:shadow-2xl transition-all duration-300 animate-fade-in-up-delayed">
+        <NeomorphicCard className="hover:shadow-2xl transition-all duration-300 animate-scale-in-fast">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold">Регистрация</CardTitle>
             <CardDescription>
@@ -170,7 +170,7 @@ export default function RegisterPage() {
                 </div>
               )}
 
-              <div className="space-y-2 animate-fade-in-up-delayed-2">
+              <div className="space-y-2 animate-slide-up-fast-delay-1">
                 <label htmlFor="name" className="text-sm font-medium text-gray-300 flex items-center">
                   <User className="w-4 h-4 mr-2 text-blue-400" />
                   Имя
@@ -189,7 +189,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <div className="space-y-2 animate-fade-in-up-delayed-3">
+              <div className="space-y-2 animate-slide-up-fast-delay-1">
                 <label htmlFor="email" className="text-sm font-medium text-gray-300 flex items-center">
                   <Mail className="w-4 h-4 mr-2 text-purple-400" />
                   Email
@@ -208,7 +208,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <div className="space-y-2 animate-fade-in-up-delayed-4">
+              <div className="space-y-2 animate-slide-up-fast-delay-2">
                 <label htmlFor="role" className="text-sm font-medium text-gray-300 flex items-center">
                   <User className="w-4 h-4 mr-2 text-cyan-400" />
                   Роль
@@ -224,7 +224,7 @@ export default function RegisterPage() {
                 </select>
               </div>
 
-              <div className="space-y-2 animate-fade-in-up-delayed-5">
+              <div className="space-y-2 animate-slide-up-fast-delay-2">
                 <label htmlFor="password" className="text-sm font-medium text-gray-300 flex items-center">
                   <Lock className="w-4 h-4 mr-2 text-blue-400" />
                   Пароль
@@ -293,7 +293,7 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              <div className="space-y-2 animate-fade-in-up-delayed-6">
+              <div className="space-y-2 animate-slide-up-fast-delay-2">
                 <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-300 flex items-center">
                   <Lock className="w-4 h-4 mr-2 text-blue-400" />
                   Подтвердите пароль
@@ -351,7 +351,7 @@ export default function RegisterPage() {
 
               <Button
                 type="submit"
-                className="w-full h-12 text-base font-semibold hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl animate-fade-in-up-delayed-7"
+                className="w-full h-12 text-base font-semibold hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl animate-slide-up-fast-delay-2"
                 variant="gradient"
                 disabled={isLoading}
               >
@@ -366,7 +366,7 @@ export default function RegisterPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center animate-fade-in-up-delayed-8">
+            <div className="mt-6 text-center animate-slide-up-fast-delay-2">
               <p className="text-sm text-gray-300">
                 Уже есть аккаунт?{' '}
                 <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium hover:underline transition-all duration-200">

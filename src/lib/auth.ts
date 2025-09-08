@@ -52,9 +52,7 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 дней
-    updateAge: 24 * 60 * 60, // обновлять каждые 24 часа
+    strategy: 'jwt'
   },
   callbacks: {
     async jwt({ token, user }) {

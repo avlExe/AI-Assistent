@@ -1,5 +1,7 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -18,11 +20,29 @@ import {
   Zap,
   Heart,
   Sparkles,
-  Zap as Lightning
+  Zap as Lightning,
+  User,
+  LogOut
 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function HomePage() {
+  const { data: session, status } = useSession()
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false)
+
+  useEffect(() => {
+    // Показываем приветственное сообщение для новых пользователей
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('message')?.includes('Добро пожаловать')) {
+      setShowWelcomeMessage(true)
+      // Убираем сообщение из URL через 5 секунд
+      setTimeout(() => {
+        setShowWelcomeMessage(false)
+        window.history.replaceState({}, '', '/')
+      }, 5000)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen relative">
       {/* Global Background */}
@@ -94,20 +114,48 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="flex items-center space-x-4">
-            <Link href="/auth/login">
-              <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all duration-300">
-                Войти
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button className="relative group overflow-hidden bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 hover:from-blue-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                <span className="relative z-10 flex items-center space-x-2">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Начать</span>
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-              </Button>
-            </Link>
+            {session ? (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 text-slate-300">
+                  <User className="w-4 h-4" />
+                  <span className="hidden sm:block">Привет, {session.user?.name}!</span>
+                </div>
+                <Link href="/assistant">
+                  <Button className="relative group overflow-hidden bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 hover:from-blue-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                    <span className="relative z-10 flex items-center space-x-2">
+                      <Brain className="w-4 h-4" />
+                      <span>Помощник</span>
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                  </Button>
+                </Link>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => signOut()}
+                  className="text-slate-300 hover:text-red-400 hover:bg-red-900/20 transition-all duration-300"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:block">Выйти</span>
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Link href="/auth/login">
+                  <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all duration-300">
+                    Войти
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button className="relative group overflow-hidden bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 hover:from-blue-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                    <span className="relative z-10 flex items-center space-x-2">
+                      <Sparkles className="w-4 h-4" />
+                      <span>Начать</span>
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -143,6 +191,16 @@ export default function HomePage() {
               <Sparkles className="w-4 h-4 mr-2" />
               Новое поколение ИИ-помощников
             </Badge>
+            
+            {/* Приветственное сообщение для авторизованных пользователей */}
+            {showWelcomeMessage && (
+              <div className="mb-6 p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl backdrop-blur-sm animate-fade-in-up">
+                <div className="flex items-center justify-center space-x-2 text-green-100">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="font-medium">Регистрация успешна! Добро пожаловать!</span>
+                </div>
+              </div>
+            )}
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white animate-fade-in-up-delayed">
               <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">Умный выбор</span>
               <br />

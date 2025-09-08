@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Input, NeomorphicInput } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, NeomorphicCard } from '@/components/ui/card'
@@ -101,7 +102,19 @@ export default function RegisterPage() {
       })
 
       if (response.ok) {
-        router.push('/auth/login?message=Регистрация успешна! Войдите в систему.')
+        // Автоматический вход после регистрации
+        const signInResult = await signIn('credentials', {
+          email: formData.email,
+          password: formData.password,
+          redirect: false,
+        })
+
+        if (signInResult?.ok) {
+          router.push('/?message=Регистрация успешна! Добро пожаловать!')
+        } else {
+          // Если автоматический вход не удался, перенаправляем на страницу входа
+          router.push('/auth/login?message=Регистрация успешна! Войдите в систему.')
+        }
       } else {
         const data = await response.json()
         setError(data.message || 'Ошибка при регистрации')

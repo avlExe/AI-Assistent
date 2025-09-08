@@ -33,29 +33,15 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20"></div>
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-slate-800/40 to-slate-900/60"></div>
         
-                 {/* Плотный фон для хедера - верхняя часть страницы */}
-                 <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-blue-500/60 rounded-full blur-3xl animate-pulse"></div>
-                 <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-purple-500/60 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-                 <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/60 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-                 
-                 {/* Дополнительные элементы в хедере */}
-                 <div className="absolute top-1/6 left-1/6 w-56 h-56 bg-pink-500/50 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.5s'}}></div>
-                 <div className="absolute top-1/5 right-1/5 w-48 h-48 bg-indigo-500/50 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
-                 <div className="absolute top-2/5 left-1/8 w-52 h-52 bg-emerald-500/45 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.8s'}}></div>
-                 <div className="absolute top-1/4 right-1/8 w-44 h-44 bg-orange-500/45 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2.2s'}}></div>
-                 
-                 {/* Ещё больше элементов в верхней части */}
-                 <div className="absolute top-1/8 left-1/8 w-40 h-40 bg-violet-500/40 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.3s'}}></div>
-                 <div className="absolute top-1/7 right-1/7 w-36 h-36 bg-rose-500/40 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.8s'}}></div>
-                 <div className="absolute top-1/3 left-1/12 w-32 h-32 bg-teal-500/40 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.7s'}}></div>
-                 <div className="absolute top-1/3 right-1/12 w-38 h-38 bg-amber-500/40 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.3s'}}></div>
-                 <div className="absolute top-1/6 right-1/3 w-34 h-34 bg-lime-500/35 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2.5s'}}></div>
-                 <div className="absolute top-1/5 left-1/3 w-42 h-42 bg-sky-500/40 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.9s'}}></div>
-                 
-                 {/* Дополнительные мелкие элементы для плотности в хедере (уменьшено) */}
-                 <div className="absolute top-1/12 left-1/4 w-24 h-24 bg-cyan-400/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                 <div className="absolute top-1/10 right-1/4 w-28 h-28 bg-purple-400/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '1.2s'}}></div>
-                 <div className="absolute top-1/8 left-1/2 w-20 h-20 bg-blue-400/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.6s'}}></div>
+        {/* Шарики в хедере */}
+        {/* Слева */}
+        <div className="absolute top-1/3 left-1/4 w-40 h-40 bg-blue-500/40 rounded-full blur-3xl animate-pulse" style={{animationDelay: '0.5s'}}></div>
+        
+        {/* По центру большой */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-purple-500/50 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        
+        {/* Справа */}
+        <div className="absolute top-1/3 right-1/4 w-36 h-36 bg-cyan-500/40 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
       </div>
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-slate-900/90 backdrop-blur-xl border-b border-slate-700/40">
@@ -130,6 +116,26 @@ export default function HomePage() {
       <section className="relative pt-24 pb-16 px-4">
         {/* Semi-transparent overlay */}
         <div className="absolute inset-0 bg-slate-800/30 backdrop-blur-sm"></div>
+        
+        {/* Анимированные элементы для Hero секции */}
+        {/* Левый верхний угол - синий шарик */}
+        <div className="absolute top-1/4 left-1/6 w-32 h-32 bg-blue-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.5s'}}></div>
+        
+        {/* Правый верхний угол - фиолетовый шарик */}
+        <div className="absolute top-1/3 right-1/6 w-28 h-28 bg-purple-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        
+        {/* Левый нижний угол - голубой шарик */}
+        <div className="absolute bottom-1/4 left-1/8 w-36 h-36 bg-cyan-500/25 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
+        
+        {/* Правый нижний угол - розовый шарик */}
+        <div className="absolute bottom-1/3 right-1/8 w-24 h-24 bg-pink-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        
+        {/* Центр - большой градиентный шарик */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2.5s'}}></div>
+        
+        {/* Дополнительные мелкие элементы */}
+        <div className="absolute top-1/6 left-1/3 w-16 h-16 bg-emerald-500/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.8s'}}></div>
+        <div className="absolute top-2/3 right-1/3 w-20 h-20 bg-orange-500/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '1.8s'}}></div>
 
         <div className="container mx-auto text-center relative z-10">
           <div className="max-w-4xl mx-auto">
@@ -228,6 +234,8 @@ export default function HomePage() {
       {/* Features Section */}
       <section id="features" className="relative py-20 px-4">
         <div className="absolute inset-0 bg-slate-800/60 backdrop-blur-md border-t border-b border-slate-700/30"></div>
+        
+        
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
@@ -353,6 +361,9 @@ export default function HomePage() {
               <div className="text-slate-300 group-hover:text-slate-200 transition-colors">Доступность</div>
             </div>
           </div>
+          
+          {/* Шарик под карточкой "Высокая точность рекомендаций" */}
+          <div className="absolute top-3/4 left-1/2 w-24 h-24 bg-cyan-500/25 rounded-full blur-xl animate-pulse" style={{animationDelay: '2s'}}></div>
         </div>
       </section>
 
@@ -360,13 +371,8 @@ export default function HomePage() {
       <section id="about" className="relative py-20 px-4 border-t border-b border-slate-700/30">
         <div className="absolute inset-0 bg-slate-800/60 backdrop-blur-md"></div>
         
-        {/* Анимированные светящиеся элементы для секции "О проекте" */}
-        <div className="absolute top-1/4 left-1/6 w-32 h-32 bg-blue-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.5s'}}></div>
-        <div className="absolute top-1/3 right-1/6 w-28 h-28 bg-purple-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.2s'}}></div>
-        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-cyan-500/25 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.8s'}}></div>
-        <div className="absolute top-2/3 right-1/3 w-36 h-36 bg-pink-500/25 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.8s'}}></div>
-        <div className="absolute top-1/5 left-1/2 w-20 h-20 bg-emerald-500/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '2.1s'}}></div>
-        <div className="absolute top-3/4 right-1/5 w-30 h-30 bg-orange-500/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.3s'}}></div>
+        {/* Один шарик для секции "О проекте" */}
+        <div className="absolute top-1/2 left-1/6 w-40 h-40 bg-purple-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
         
         <div className="container mx-auto text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
@@ -385,13 +391,6 @@ export default function HomePage() {
       <section className="relative py-20 px-4">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-purple-600/80 backdrop-blur-sm"></div>
         
-        {/* Анимированные светящиеся элементы для CTA секции */}
-        <div className="absolute top-1/4 left-1/5 w-28 h-28 bg-purple-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '0.7s'}}></div>
-        <div className="absolute top-1/3 right-1/5 w-32 h-32 bg-pink-500/30 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
-        <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-emerald-500/25 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.9s'}}></div>
-        <div className="absolute top-2/3 right-1/4 w-30 h-30 bg-orange-500/25 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2.0s'}}></div>
-        <div className="absolute top-1/6 left-1/2 w-26 h-26 bg-violet-500/25 rounded-full blur-xl animate-pulse" style={{animationDelay: '1.1s'}}></div>
-        <div className="absolute top-3/4 right-1/3 w-22 h-22 bg-rose-500/20 rounded-full blur-xl animate-pulse" style={{animationDelay: '0.4s'}}></div>
         
         <div className="container mx-auto text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">

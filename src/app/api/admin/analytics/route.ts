@@ -109,29 +109,67 @@ export async function GET(request: NextRequest) {
       take: 20
     })
 
-    // Статистика по месяцам (для графиков) - PostgreSQL версия
-    const monthlyStats = await Promise.all([
-      // Пользователи по месяцам
-      prisma.$queryRaw`
-        SELECT 
-          to_char(created_at, 'YYYY-MM') as month,
-          COUNT(*) as count
-        FROM "User" 
-        WHERE created_at >= NOW() - INTERVAL '12 months'
-        GROUP BY to_char(created_at, 'YYYY-MM')
-        ORDER BY month
-      `,
-      // Отчёты по месяцам
-      prisma.$queryRaw`
-        SELECT 
-          to_char(created_at, 'YYYY-MM') as month,
-          COUNT(*) as count
-        FROM "Report" 
-        WHERE created_at >= NOW() - INTERVAL '12 months'
-        GROUP BY to_char(created_at, 'YYYY-MM')
-        ORDER BY month
-      `
-    ])
+    // Определяем тип базы данных по URL
+    const isPostgreSQL = process.env.DATABASE_URL?.includes('postgresql') || process.env.DATABASE_URL?.includes('supabase')
+    
+    // Статистика по месяцам (универсальная версия с fallback)
+    let monthlyStats: any[] = [[], []]
+    
+    try {
+      if (isPostgreSQL) {
+        // PostgreSQL версия
+        monthlyStats = await Promise.all([
+          // Пользователи по месяцам
+          prisma.$queryRaw`
+            SELECT 
+              to_char(created_at, 'YYYY-MM') as month,
+              COUNT(*)::int as count
+            FROM "User" 
+            WHERE created_at >= NOW() - INTERVAL '12 months'
+            GROUP BY to_char(created_at, 'YYYY-MM')
+            ORDER BY month
+          `,
+          // Отчёты по месяцам
+          prisma.$queryRaw`
+            SELECT 
+              to_char(created_at, 'YYYY-MM') as month,
+              COUNT(*)::int as count
+            FROM "Report" 
+            WHERE created_at >= NOW() - INTERVAL '12 months'
+            GROUP BY to_char(created_at, 'YYYY-MM')
+            ORDER BY month
+          `
+        ])
+      } else {
+        // SQLite версия
+        monthlyStats = await Promise.all([
+          // Пользователи по месяцам
+          prisma.$queryRaw`
+            SELECT 
+              strftime('%Y-%m', created_at) as month,
+              COUNT(*) as count
+            FROM users 
+            WHERE created_at >= datetime('now', '-12 months')
+            GROUP BY strftime('%Y-%m', created_at)
+            ORDER BY month
+          `,
+          // Отчёты по месяцам
+          prisma.$queryRaw`
+            SELECT 
+              strftime('%Y-%m', created_at) as month,
+              COUNT(*) as count
+            FROM reports 
+            WHERE created_at >= datetime('now', '-12 months')
+            GROUP BY strftime('%Y-%m', created_at)
+            ORDER BY month
+          `
+        ])
+      }
+    } catch (rawQueryError) {
+      console.warn('Raw query failed, using fallback:', rawQueryError)
+      // Fallback: используем простые запросы без группировки по месяцам
+      monthlyStats = [[], []]
+    }
 
     return NextResponse.json({
       overview: {

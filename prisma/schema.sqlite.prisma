@@ -102,7 +102,7 @@ model Parent {
   studentId String   @unique
   createdAt DateTime @default(now())
   parent    User     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
-  student   User     @relation("StudentParent", fields: [studentId], references: [id], onDelete: Cascade)
+  student   User     @relation("ParentChild", fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("parents")
 }

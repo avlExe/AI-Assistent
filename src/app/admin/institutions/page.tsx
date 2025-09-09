@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { InstitutionModal } from '@/components/ui/modals'
+import { LoadingError } from '@/components/ui/loading-error'
+import { useDataCache } from '@/hooks/useDataCache'
 import { 
   Building2, 
   Search, 
@@ -71,28 +73,14 @@ export default function AdminInstitutionsPage() {
         ...(type && { type })
       })
 
-      const response = await fetch(`/api/admin/institutions?${params}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Включаем cookies для аутентификации
-        cache: 'no-store'
-      })
-      
+      const response = await fetch(`/api/admin/institutions?${params}`)
       if (response.ok) {
         const data = await response.json()
-        setInstitutions(data.institutions || [])
-        setPagination(data.pagination || { page: 1, limit: 10, total: 0, pages: 0 })
-      } else {
-        console.error('Failed to fetch institutions:', response.status, response.statusText)
-        setInstitutions([])
-        setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
+        setInstitutions(data.institutions)
+        setPagination(data.pagination)
       }
     } catch (error) {
       console.error('Error fetching institutions:', error)
-      setInstitutions([])
-      setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
     } finally {
       setLoading(false)
     }

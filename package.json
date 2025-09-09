@@ -10,8 +10,6 @@
     "db:push": "npx prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "npx prisma studio",
-    "db:local": "copy prisma\\schema.sqlite.prisma prisma\\schema.prisma && npx prisma generate",
-    "db:prod": "copy prisma\\schema.prisma.bak prisma\\schema.prisma && npx prisma generate",
     "postinstall": "npx prisma generate"
   },
   "prisma": {

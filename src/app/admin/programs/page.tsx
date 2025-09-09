@@ -74,14 +74,28 @@ export default function AdminProgramsPage() {
         ...(institutionId && { institutionId })
       })
 
-      const response = await fetch(`/api/admin/programs?${params}`)
+      const response = await fetch(`/api/admin/programs?${params}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Включаем cookies для аутентификации
+        cache: 'no-store'
+      })
+      
       if (response.ok) {
         const data = await response.json()
-        setPrograms(data.programs)
-        setPagination(data.pagination)
+        setPrograms(data.programs || [])
+        setPagination(data.pagination || { page: 1, limit: 10, total: 0, pages: 0 })
+      } else {
+        console.error('Failed to fetch programs:', response.status, response.statusText)
+        setPrograms([])
+        setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
       }
     } catch (error) {
       console.error('Error fetching programs:', error)
+      setPrograms([])
+      setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
     } finally {
       setLoading(false)
     }

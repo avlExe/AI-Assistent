@@ -71,14 +71,28 @@ export default function AdminInstitutionsPage() {
         ...(type && { type })
       })
 
-      const response = await fetch(`/api/admin/institutions?${params}`)
+      const response = await fetch(`/api/admin/institutions?${params}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Включаем cookies для аутентификации
+        cache: 'no-store'
+      })
+      
       if (response.ok) {
         const data = await response.json()
-        setInstitutions(data.institutions)
-        setPagination(data.pagination)
+        setInstitutions(data.institutions || [])
+        setPagination(data.pagination || { page: 1, limit: 10, total: 0, pages: 0 })
+      } else {
+        console.error('Failed to fetch institutions:', response.status, response.statusText)
+        setInstitutions([])
+        setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
       }
     } catch (error) {
       console.error('Error fetching institutions:', error)
+      setInstitutions([])
+      setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
     } finally {
       setLoading(false)
     }

@@ -63,14 +63,28 @@ export default function AdminReportsPage() {
         ...(userId && { userId })
       })
 
-      const response = await fetch(`/api/admin/reports?${params}`)
+      const response = await fetch(`/api/admin/reports?${params}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Включаем cookies для аутентификации
+        cache: 'no-store'
+      })
+      
       if (response.ok) {
         const data = await response.json()
-        setReports(data.reports)
-        setPagination(data.pagination)
+        setReports(data.reports || [])
+        setPagination(data.pagination || { page: 1, limit: 10, total: 0, pages: 0 })
+      } else {
+        console.error('Failed to fetch reports:', response.status, response.statusText)
+        setReports([])
+        setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
       }
     } catch (error) {
       console.error('Error fetching reports:', error)
+      setReports([])
+      setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
     } finally {
       setLoading(false)
     }

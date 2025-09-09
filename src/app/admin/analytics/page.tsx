@@ -68,13 +68,25 @@ export default function AdminAnalyticsPage() {
   const fetchAnalytics = async () => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/admin/analytics?period=${period}`)
+      const response = await fetch(`/api/admin/analytics?period=${period}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Включаем cookies для аутентификации
+        cache: 'no-store'
+      })
+      
       if (response.ok) {
         const analyticsData = await response.json()
         setData(analyticsData)
+      } else {
+        console.error('Failed to fetch analytics:', response.status, response.statusText)
+        setData(null)
       }
     } catch (error) {
       console.error('Error fetching analytics:', error)
+      setData(null)
     } finally {
       setLoading(false)
     }
@@ -193,10 +205,23 @@ export default function AdminAnalyticsPage() {
   if (!data) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-500">Ошибка загрузки данных</p>
-        <Button onClick={fetchAnalytics} className="mt-4">
-          Попробовать снова
-        </Button>
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 max-w-md mx-auto">
+          <div className="text-red-600 dark:text-red-400 mb-4">
+            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-red-800 dark:text-red-200 mb-2">
+            Ошибка загрузки данных
+          </h3>
+          <p className="text-red-600 dark:text-red-400 mb-4">
+            Не удалось загрузить аналитику. Проверьте подключение к базе данных.
+          </p>
+          <Button onClick={fetchAnalytics} className="bg-red-600 hover:bg-red-700 text-white">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Попробовать снова
+          </Button>
+        </div>
       </div>
     )
   }

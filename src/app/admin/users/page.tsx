@@ -69,14 +69,28 @@ export default function AdminUsersPage() {
         ...(role && { role })
       })
 
-      const response = await fetch(`/api/admin/users?${params}`)
+      const response = await fetch(`/api/admin/users?${params}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Включаем cookies для аутентификации
+        cache: 'no-store' // Отключаем кэширование для актуальных данных
+      })
+      
       if (response.ok) {
         const data = await response.json()
-        setUsers(data.users)
-        setPagination(data.pagination)
+        setUsers(data.users || [])
+        setPagination(data.pagination || { page: 1, limit: 10, total: 0, pages: 0 })
+      } else {
+        console.error('Failed to fetch users:', response.status, response.statusText)
+        setUsers([])
+        setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
       }
     } catch (error) {
       console.error('Error fetching users:', error)
+      setUsers([])
+      setPagination({ page: 1, limit: 10, total: 0, pages: 0 })
     } finally {
       setLoading(false)
     }

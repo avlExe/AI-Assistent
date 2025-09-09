@@ -17,8 +17,17 @@ export async function GET(request: NextRequest) {
 
     const session = await getServerSession(authOptions)
     
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    console.log('Analytics API - Session:', session)
+    console.log('Analytics API - User role:', session?.user?.role)
+    
+    if (!session) {
+      console.log('Analytics API - No session found')
+      return NextResponse.json({ error: 'No session found' }, { status: 401 })
+    }
+    
+    if (session.user.role !== 'ADMIN') {
+      console.log('Analytics API - User is not admin, role:', session.user.role)
+      return NextResponse.json({ error: 'User is not admin' }, { status: 403 })
     }
 
     // Динамический импорт Prisma
@@ -109,28 +118,50 @@ export async function GET(request: NextRequest) {
       take: 20
     })
 
-    // Статистика по месяцам (для графиков) - PostgreSQL версия
+    // Статистика по месяцам (для графиков) - универсальная версия
+    const isPostgreSQL = process.env.DATABASE_URL?.includes('postgresql')
+    
     const monthlyStats = await Promise.all([
       // Пользователи по месяцам
-      prisma.$queryRaw`
-        SELECT 
-          to_char(created_at, 'YYYY-MM') as month,
-          COUNT(*) as count
-        FROM "User" 
-        WHERE created_at >= NOW() - INTERVAL '12 months'
-        GROUP BY to_char(created_at, 'YYYY-MM')
-        ORDER BY month
-      `,
+      isPostgreSQL 
+        ? prisma.$queryRaw`
+            SELECT 
+              to_char("createdAt", 'YYYY-MM') as month,
+              COUNT(*) as count
+            FROM "users" 
+            WHERE "createdAt" >= NOW() - INTERVAL '12 months'
+            GROUP BY to_char("createdAt", 'YYYY-MM')
+            ORDER BY month
+          `
+        : prisma.$queryRaw`
+            SELECT 
+              strftime('%Y-%m', "createdAt") as month,
+              COUNT(*) as count
+            FROM "users" 
+            WHERE "createdAt" >= datetime('now', '-12 months')
+            GROUP BY strftime('%Y-%m', "createdAt")
+            ORDER BY month
+          `,
       // Отчёты по месяцам
-      prisma.$queryRaw`
-        SELECT 
-          to_char(created_at, 'YYYY-MM') as month,
-          COUNT(*) as count
-        FROM "Report" 
-        WHERE created_at >= NOW() - INTERVAL '12 months'
-        GROUP BY to_char(created_at, 'YYYY-MM')
-        ORDER BY month
-      `
+      isPostgreSQL
+        ? prisma.$queryRaw`
+            SELECT 
+              to_char("createdAt", 'YYYY-MM') as month,
+              COUNT(*) as count
+            FROM "reports" 
+            WHERE "createdAt" >= NOW() - INTERVAL '12 months'
+            GROUP BY to_char("createdAt", 'YYYY-MM')
+            ORDER BY month
+          `
+        : prisma.$queryRaw`
+            SELECT 
+              strftime('%Y-%m', "createdAt") as month,
+              COUNT(*) as count
+            FROM "reports" 
+            WHERE "createdAt" >= datetime('now', '-12 months')
+            GROUP BY strftime('%Y-%m', "createdAt")
+            ORDER BY month
+          `
     ])
 
     return NextResponse.json({

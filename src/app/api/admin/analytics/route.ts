@@ -50,35 +50,35 @@ export async function GET(request: NextRequest) {
       recentPrograms,
       recentReports
     ] = await Promise.all([
-      prisma.user.count(),
-      prisma.institution.count(),
-      prisma.program.count(),
-      prisma.report.count(),
+      prisma.user.count().catch(() => 0),
+      prisma.institution.count().catch(() => 0),
+      prisma.program.count().catch(() => 0),
+      prisma.report.count().catch(() => 0),
       prisma.user.count({
         where: { createdAt: { gte: daysAgo } }
-      }),
+      }).catch(() => 0),
       prisma.institution.count({
         where: { createdAt: { gte: daysAgo } }
-      }),
+      }).catch(() => 0),
       prisma.program.count({
         where: { createdAt: { gte: daysAgo } }
-      }),
+      }).catch(() => 0),
       prisma.report.count({
         where: { createdAt: { gte: daysAgo } }
-      })
+      }).catch(() => 0)
     ])
 
     // Статистика по ролям пользователей
     const usersByRole = await prisma.user.groupBy({
       by: ['role'],
       _count: { role: true }
-    })
+    }).catch(() => [])
 
     // Статистика по типам вузов
     const institutionsByType = await prisma.institution.groupBy({
       by: ['type'],
       _count: { type: true }
-    })
+    }).catch(() => [])
 
     // Топ вузов по количеству программ
     const topInstitutions = await prisma.institution.findMany({
@@ -96,7 +96,7 @@ export async function GET(request: NextRequest) {
         }
       },
       take: 10
-    })
+    }).catch(() => [])
 
     // Статистика активности пользователей за последние дни
     const userActivity = await prisma.user.findMany({
@@ -116,7 +116,7 @@ export async function GET(request: NextRequest) {
       },
       orderBy: { createdAt: 'desc' },
       take: 20
-    })
+    }).catch(() => [])
 
     // Статистика по месяцам (для графиков) - универсальная версия
     const isPostgreSQL = process.env.DATABASE_URL?.includes('postgresql')
@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
             WHERE "createdAt" >= NOW() - INTERVAL '12 months'
             GROUP BY to_char("createdAt", 'YYYY-MM')
             ORDER BY month
-          `
+          `.catch(() => [])
         : prisma.$queryRaw`
             SELECT 
               strftime('%Y-%m', "createdAt") as month,
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest) {
             WHERE "createdAt" >= datetime('now', '-12 months')
             GROUP BY strftime('%Y-%m', "createdAt")
             ORDER BY month
-          `,
+          `.catch(() => []),
       // Отчёты по месяцам
       isPostgreSQL
         ? prisma.$queryRaw`
@@ -152,7 +152,7 @@ export async function GET(request: NextRequest) {
             WHERE "createdAt" >= NOW() - INTERVAL '12 months'
             GROUP BY to_char("createdAt", 'YYYY-MM')
             ORDER BY month
-          `
+          `.catch(() => [])
         : prisma.$queryRaw`
             SELECT 
               strftime('%Y-%m', "createdAt") as month,
@@ -161,7 +161,7 @@ export async function GET(request: NextRequest) {
             WHERE "createdAt" >= datetime('now', '-12 months')
             GROUP BY strftime('%Y-%m', "createdAt")
             ORDER BY month
-          `
+          `.catch(() => [])
     ])
 
     return NextResponse.json({
@@ -207,6 +207,15 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error fetching analytics:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('Database URL:', process.env.DATABASE_URL ? 'Set' : 'Not set')
+    console.error('Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    })
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    }, { status: 500 })
   }
 }

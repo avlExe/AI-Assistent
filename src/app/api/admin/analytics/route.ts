@@ -179,9 +179,9 @@ export async function GET(request: NextRequest) {
     } catch (rawQueryError) {
       console.error('Raw query failed:', rawQueryError)
       console.error('Error details:', {
-        message: rawQueryError.message,
-        code: rawQueryError.code,
-        stack: rawQueryError.stack
+        message: rawQueryError instanceof Error ? rawQueryError.message : 'Unknown error',
+        code: (rawQueryError as any)?.code || 'Unknown code',
+        stack: rawQueryError instanceof Error ? rawQueryError.stack : 'No stack trace'
       })
       
       // Fallback: получаем данные за последние 12 месяцев без группировки
@@ -268,6 +268,9 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error fetching analytics:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 }

@@ -68,10 +68,20 @@ export default function AdminAnalyticsPage() {
   const fetchAnalytics = async () => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/admin/analytics?period=${period}`)
+      // Сначала пробуем основной API
+      let response = await fetch(`/api/admin/analytics?period=${period}`)
+      
+      if (!response.ok) {
+        console.warn('Main analytics API failed, trying simple version')
+        // Если основной API не работает, пробуем простую версию
+        response = await fetch(`/api/admin/analytics-simple?period=${period}`)
+      }
+      
       if (response.ok) {
         const analyticsData = await response.json()
         setData(analyticsData)
+      } else {
+        console.error('Both analytics APIs failed')
       }
     } catch (error) {
       console.error('Error fetching analytics:', error)

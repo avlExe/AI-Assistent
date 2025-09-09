@@ -110,13 +110,21 @@ export async function GET(request: NextRequest) {
     })
 
     // Определяем тип базы данных по URL
-    const isPostgreSQL = process.env.DATABASE_URL?.includes('postgresql') || process.env.DATABASE_URL?.includes('supabase')
+    const databaseUrl = process.env.DATABASE_URL || ''
+    const isPostgreSQL = databaseUrl.includes('postgresql') || 
+                        databaseUrl.includes('supabase') || 
+                        databaseUrl.includes('postgres://') ||
+                        databaseUrl.includes('postgresql://')
+    
+    console.log('Database URL detected:', databaseUrl.substring(0, 20) + '...')
+    console.log('Is PostgreSQL:', isPostgreSQL)
     
     // Статистика по месяцам (универсальная версия с fallback)
     let monthlyStats: any[] = [[], []]
     
     try {
       if (isPostgreSQL) {
+        console.log('Using PostgreSQL queries')
         // PostgreSQL версия
         monthlyStats = await Promise.all([
           // Пользователи по месяцам
@@ -140,7 +148,9 @@ export async function GET(request: NextRequest) {
             ORDER BY month
           `
         ])
+        console.log('PostgreSQL queries successful')
       } else {
+        console.log('Using SQLite queries')
         // SQLite версия
         monthlyStats = await Promise.all([
           // Пользователи по месяцам
@@ -164,11 +174,55 @@ export async function GET(request: NextRequest) {
             ORDER BY month
           `
         ])
+        console.log('SQLite queries successful')
       }
     } catch (rawQueryError) {
-      console.warn('Raw query failed, using fallback:', rawQueryError)
-      // Fallback: используем простые запросы без группировки по месяцам
-      monthlyStats = [[], []]
+      console.error('Raw query failed:', rawQueryError)
+      console.error('Error details:', {
+        message: rawQueryError.message,
+        code: rawQueryError.code,
+        stack: rawQueryError.stack
+      })
+      
+      // Fallback: получаем данные за последние 12 месяцев без группировки
+      try {
+        const twelveMonthsAgo = new Date()
+        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12)
+        
+        const [recentUsers, recentReports] = await Promise.all([
+          prisma.user.findMany({
+            where: { createdAt: { gte: twelveMonthsAgo } },
+            select: { createdAt: true }
+          }),
+          prisma.report.findMany({
+            where: { createdAt: { gte: twelveMonthsAgo } },
+            select: { createdAt: true }
+          })
+        ])
+        
+        // Простая группировка по месяцам в JavaScript
+        const usersByMonth = recentUsers.reduce((acc, user) => {
+          const month = user.createdAt.toISOString().substring(0, 7)
+          acc[month] = (acc[month] || 0) + 1
+          return acc
+        }, {} as Record<string, number>)
+        
+        const reportsByMonth = recentReports.reduce((acc, report) => {
+          const month = report.createdAt.toISOString().substring(0, 7)
+          acc[month] = (acc[month] || 0) + 1
+          return acc
+        }, {} as Record<string, number>)
+        
+        monthlyStats = [
+          Object.entries(usersByMonth).map(([month, count]) => ({ month, count })),
+          Object.entries(reportsByMonth).map(([month, count]) => ({ month, count }))
+        ]
+        
+        console.log('Fallback monthly stats generated successfully')
+      } catch (fallbackError) {
+        console.error('Fallback also failed:', fallbackError)
+        monthlyStats = [[], []]
+      }
     }
 
     return NextResponse.json({

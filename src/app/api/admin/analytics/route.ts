@@ -30,152 +30,108 @@ export async function GET(request: NextRequest) {
     const daysAgo = new Date()
     daysAgo.setDate(daysAgo.getDate() - parseInt(period))
 
-    // Общая статистика с обработкой ошибок
-    let totalUsers = 0, totalInstitutions = 0, totalPrograms = 0, totalReports = 0
-    let recentUsers = 0, recentInstitutions = 0, recentPrograms = 0, recentReports = 0
-
-    try {
-      const [
-        totalUsersResult,
-        totalInstitutionsResult,
-        totalProgramsResult,
-        totalReportsResult,
-        recentUsersResult,
-        recentInstitutionsResult,
-        recentProgramsResult,
-        recentReportsResult
-      ] = await Promise.allSettled([
-        prisma.user.count(),
-        prisma.institution.count(),
-        prisma.program.count(),
-        prisma.report.count(),
-        prisma.user.count({
-          where: { createdAt: { gte: daysAgo } }
-        }),
-        prisma.institution.count({
-          where: { createdAt: { gte: daysAgo } }
-        }),
-        prisma.program.count({
-          where: { createdAt: { gte: daysAgo } }
-        }),
-        prisma.report.count({
-          where: { createdAt: { gte: daysAgo } }
-        })
-      ])
-
-      totalUsers = totalUsersResult.status === 'fulfilled' ? totalUsersResult.value : 0
-      totalInstitutions = totalInstitutionsResult.status === 'fulfilled' ? totalInstitutionsResult.value : 0
-      totalPrograms = totalProgramsResult.status === 'fulfilled' ? totalProgramsResult.value : 0
-      totalReports = totalReportsResult.status === 'fulfilled' ? totalReportsResult.value : 0
-      recentUsers = recentUsersResult.status === 'fulfilled' ? recentUsersResult.value : 0
-      recentInstitutions = recentInstitutionsResult.status === 'fulfilled' ? recentInstitutionsResult.value : 0
-      recentPrograms = recentProgramsResult.status === 'fulfilled' ? recentProgramsResult.value : 0
-      recentReports = recentReportsResult.status === 'fulfilled' ? recentReportsResult.value : 0
-    } catch (error) {
-      console.error('Error fetching basic counts:', error)
-    }
+    // Общая статистика
+    const [
+      totalUsers,
+      totalInstitutions,
+      totalPrograms,
+      totalReports,
+      recentUsers,
+      recentInstitutions,
+      recentPrograms,
+      recentReports
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.institution.count(),
+      prisma.program.count(),
+      prisma.report.count(),
+      prisma.user.count({
+        where: { createdAt: { gte: daysAgo } }
+      }),
+      prisma.institution.count({
+        where: { createdAt: { gte: daysAgo } }
+      }),
+      prisma.program.count({
+        where: { createdAt: { gte: daysAgo } }
+      }),
+      prisma.report.count({
+        where: { createdAt: { gte: daysAgo } }
+      })
+    ])
 
     // Статистика по ролям пользователей
-    let usersByRole = []
-    try {
-      usersByRole = await prisma.user.groupBy({
-        by: ['role'],
-        _count: { role: true }
-      })
-    } catch (error) {
-      console.error('Error fetching users by role:', error)
-    }
+    const usersByRole = await prisma.user.groupBy({
+      by: ['role'],
+      _count: { role: true }
+    })
 
     // Статистика по типам вузов
-    let institutionsByType = []
-    try {
-      institutionsByType = await prisma.institution.groupBy({
-        by: ['type'],
-        _count: { type: true }
-      })
-    } catch (error) {
-      console.error('Error fetching institutions by type:', error)
-    }
+    const institutionsByType = await prisma.institution.groupBy({
+      by: ['type'],
+      _count: { type: true }
+    })
 
     // Топ вузов по количеству программ
-    let topInstitutions = []
-    try {
-      topInstitutions = await prisma.institution.findMany({
-        include: {
-          _count: {
-            select: {
-              programs: true,
-              savedBy: true
-            }
+    const topInstitutions = await prisma.institution.findMany({
+      include: {
+        _count: {
+          select: {
+            programs: true,
+            savedBy: true
           }
-        },
-        orderBy: {
-          programs: {
-            _count: 'desc'
-          }
-        },
-        take: 10
-      })
-    } catch (error) {
-      console.error('Error fetching top institutions:', error)
-    }
+        }
+      },
+      orderBy: {
+        programs: {
+          _count: 'desc'
+        }
+      },
+      take: 10
+    })
 
     // Статистика активности пользователей за последние дни
-    let userActivity = []
-    try {
-      userActivity = await prisma.user.findMany({
-        select: {
-          id: true,
-          name: true,
-          role: true,
-          createdAt: true,
-          _count: {
-            select: {
-              reports: true,
-              achievements: true,
-              examResults: true,
-              savedInstitutions: true
-            }
+    const userActivity = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        role: true,
+        createdAt: true,
+        _count: {
+          select: {
+            reports: true,
+            achievements: true,
+            examResults: true,
+            savedInstitutions: true
           }
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 20
-      })
-    } catch (error) {
-      console.error('Error fetching user activity:', error)
-    }
+        }
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 20
+    })
 
     // Статистика по месяцам (для графиков) - PostgreSQL версия
-    let monthlyStats = [[], []]
-    try {
-      const [usersResult, reportsResult] = await Promise.allSettled([
-        // Пользователи по месяцам
-        prisma.$queryRaw`
-          SELECT 
-            to_char("createdAt", 'YYYY-MM') as month,
-            COUNT(*) as count
-          FROM users 
-          WHERE "createdAt" >= NOW() - INTERVAL '12 months'
-          GROUP BY to_char("createdAt", 'YYYY-MM')
-          ORDER BY month
-        `,
-        // Отчёты по месяцам
-        prisma.$queryRaw`
-          SELECT 
-            to_char("createdAt", 'YYYY-MM') as month,
-            COUNT(*) as count
-          FROM reports 
-          WHERE "createdAt" >= NOW() - INTERVAL '12 months'
-          GROUP BY to_char("createdAt", 'YYYY-MM')
-          ORDER BY month
-        `
-      ])
-      
-      monthlyStats[0] = usersResult.status === 'fulfilled' ? usersResult.value : []
-      monthlyStats[1] = reportsResult.status === 'fulfilled' ? reportsResult.value : []
-    } catch (error) {
-      console.error('Error fetching monthly stats:', error)
-    }
+    const monthlyStats = await Promise.all([
+      // Пользователи по месяцам
+      prisma.$queryRaw`
+        SELECT 
+          to_char(created_at, 'YYYY-MM') as month,
+          COUNT(*) as count
+        FROM "User" 
+        WHERE created_at >= NOW() - INTERVAL '12 months'
+        GROUP BY to_char(created_at, 'YYYY-MM')
+        ORDER BY month
+      `,
+      // Отчёты по месяцам
+      prisma.$queryRaw`
+        SELECT 
+          to_char(created_at, 'YYYY-MM') as month,
+          COUNT(*) as count
+        FROM "Report" 
+        WHERE created_at >= NOW() - INTERVAL '12 months'
+        GROUP BY to_char(created_at, 'YYYY-MM')
+        ORDER BY month
+      `
+    ])
 
     return NextResponse.json({
       overview: {

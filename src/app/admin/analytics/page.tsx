@@ -68,42 +68,13 @@ export default function AdminAnalyticsPage() {
   const fetchAnalytics = async () => {
     setLoading(true)
     try {
-      // Сначала пробуем основной API
       const response = await fetch(`/api/admin/analytics?period=${period}`)
       if (response.ok) {
         const analyticsData = await response.json()
         setData(analyticsData)
-      } else {
-        // Если основной API не работает, пробуем тестовый
-        console.log('Main analytics API failed, trying test API...')
-        const testResponse = await fetch('/api/admin/analytics/test')
-        if (testResponse.ok) {
-          const testData = await testResponse.json()
-          setData(testData)
-        } else {
-          throw new Error('Both APIs failed')
-        }
       }
     } catch (error) {
       console.error('Error fetching analytics:', error)
-      // В случае полной ошибки, показываем тестовые данные
-      setData({
-        overview: {
-          totalUsers: 0,
-          totalInstitutions: 0,
-          totalPrograms: 0,
-          totalReports: 0,
-          recentUsers: 0,
-          recentInstitutions: 0,
-          recentPrograms: 0,
-          recentReports: 0
-        },
-        usersByRole: [],
-        institutionsByType: [],
-        topInstitutions: [],
-        userActivity: [],
-        monthlyStats: { users: [], reports: [] }
-      })
     } finally {
       setLoading(false)
     }
@@ -212,35 +183,20 @@ export default function AdminAnalyticsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-500" />
-          <p className="text-gray-600 dark:text-gray-400">Загрузка аналитики...</p>
-        </div>
+      <div className="flex items-center justify-center py-8">
+        <RefreshCw className="w-6 h-6 animate-spin" />
+        <span className="ml-2">Загрузка аналитики...</span>
       </div>
     )
   }
 
   if (!data) {
     return (
-      <div className="text-center py-12">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
-            <RefreshCw className="w-8 h-8 text-red-500" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Ошибка загрузки данных
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Не удалось загрузить данные аналитики
-            </p>
-            <Button onClick={fetchAnalytics} className="mt-2">
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Попробовать снова
-            </Button>
-          </div>
-        </div>
+      <div className="text-center py-8">
+        <p className="text-gray-500">Ошибка загрузки данных</p>
+        <Button onClick={fetchAnalytics} className="mt-4">
+          Попробовать снова
+        </Button>
       </div>
     )
   }

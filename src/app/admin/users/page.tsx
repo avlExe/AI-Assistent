@@ -7,8 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { UserModal } from '@/components/ui/modals'
-import { LoadingError } from '@/components/ui/loading-error'
-import { useDataCache } from '@/hooks/useDataCache'
 import { 
   Users, 
   Search, 
@@ -46,43 +44,53 @@ interface Pagination {
 
 export default function AdminUsersPage() {
   const { data: session } = useSession()
+  const [users, setUsers] = useState<User[]>([])
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    limit: 10,
+    total: 0,
+    pages: 0
+  })
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [modalLoading, setModalLoading] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
 
   const fetchUsers = async (page = 1, searchTerm = '', role = '') => {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: '10',
-      ...(searchTerm && { search: searchTerm }),
-      ...(role && { role })
-    })
+    setLoading(true)
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '10',
+        ...(searchTerm && { search: searchTerm }),
+        ...(role && { role })
+      })
 
-    const response = await fetch(`/api/admin/users?${params}`)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      const response = await fetch(`/api/admin/users?${params}`)
+      if (response.ok) {
+        const data = await response.json()
+        setUsers(data.users)
+        setPagination(data.pagination)
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error)
+    } finally {
+      setLoading(false)
     }
-    return response.json()
   }
 
-  const { data: usersData, loading, error, refetch } = useDataCache({
-    cacheKey: `users_${currentPage}_${search}_${roleFilter}`,
-    fetchFn: () => fetchUsers(currentPage, search, roleFilter),
-    ttl: 2 * 60 * 1000, // 2 minutes cache
-  })
-
-  const users = usersData?.users || []
-  const pagination = usersData?.pagination || { page: 1, limit: 10, total: 0, pages: 0 }
+  useEffect(() => {
+    fetchUsers()
+  }, [])
 
   useEffect(() => {
     // Проверяем URL параметры для редактирования
     const urlParams = new URLSearchParams(window.location.search)
     const editUserId = urlParams.get('edit')
-    if (editUserId && users.length > 0) {
+    if (editUserId) {
       // Находим пользователя для редактирования
       const userToEdit = users.find(u => u.id === editUserId)
       if (userToEdit) {
@@ -93,12 +101,11 @@ export default function AdminUsersPage() {
   }, [users])
 
   const handleSearch = () => {
-    setCurrentPage(1)
-    refetch()
+    fetchUsers(1, search, roleFilter)
   }
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage)
+    fetchUsers(newPage, search, roleFilter)
   }
 
   const handleDeleteUser = async (userId: string) => {
@@ -112,7 +119,7 @@ export default function AdminUsersPage() {
       })
 
       if (response.ok) {
-        refetch()
+        fetchUsers(pagination.page, search, roleFilter)
       } else {
         const error = await response.json()
         alert(error.error || 'Ошибка при удалении пользователя')
@@ -136,7 +143,7 @@ export default function AdminUsersPage() {
 
       if (response.ok) {
         setShowCreateModal(false)
-        refetch()
+        fetchUsers(pagination.page, search, roleFilter)
         alert('Пользователь успешно создан!')
       } else {
         const error = await response.json()
@@ -166,7 +173,7 @@ export default function AdminUsersPage() {
       if (response.ok) {
         setShowEditModal(false)
         setEditingUser(null)
-        refetch()
+        fetchUsers(pagination.page, search, roleFilter)
         alert('Пользователь успешно обновлён!')
       } else {
         const error = await response.json()
@@ -363,7 +370,7 @@ export default function AdminUsersPage() {
               <Search className="w-4 h-4 mr-2" />
               Поиск
             </Button>
-            <Button onClick={refetch} variant="outline">
+            <Button onClick={() => fetchUsers()} variant="outline">
               <RefreshCw className="w-4 h-4 mr-2" />
               Обновить
             </Button>
@@ -380,14 +387,12 @@ export default function AdminUsersPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <LoadingError
-            loading={loading}
-            error={error}
-            onRetry={refetch}
-            loadingText="Загрузка пользователей..."
-            emptyText="Пользователи не найдены"
-            showEmptyState={users.length === 0}
-          >
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <RefreshCw className="w-6 h-6 animate-spin" />
+              <span className="ml-2">Загрузка...</span>
+            </div>
+          ) : (
             <div className="space-y-4">
               {users.map((user) => (
                 <div key={user.id} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
@@ -435,7 +440,7 @@ export default function AdminUsersPage() {
                 </div>
               ))}
             </div>
-          </LoadingError>
+          )}
 
           {/* Pagination */}
           {pagination.pages > 1 && (

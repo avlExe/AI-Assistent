@@ -29,6 +29,7 @@ import Link from 'next/link'
 export default function HomePage() {
   const { data: session, status } = useSession()
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false)
+  const [isProfileButtonPressed, setIsProfileButtonPressed] = useState(false)
 
   useEffect(() => {
     // Показываем приветственное сообщение для новых пользователей
@@ -42,6 +43,13 @@ export default function HomePage() {
       }, 5000)
     }
   }, [])
+
+  const handleProfileButtonClick = () => {
+    setIsProfileButtonPressed(true)
+    setTimeout(() => {
+      setIsProfileButtonPressed(false)
+    }, 200)
+  }
 
   return (
     <div className="min-h-screen relative">
@@ -116,18 +124,43 @@ export default function HomePage() {
           <div className="flex items-center space-x-4">
             {session ? (
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 text-slate-300">
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:block">Привет, {session.user?.name}!</span>
-                </div>
-                <Link href="/assistant">
-                  <Button className="relative group overflow-hidden bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 hover:from-blue-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                    <span className="relative z-10 flex items-center space-x-2">
-                      <Brain className="w-4 h-4" />
-                      <span>Помощник</span>
+                <Link 
+                  href={
+                    session.user?.role === 'ADMIN' ? '/admin' :
+                    session.user?.role === 'STUDENT' ? '/student' :
+                    session.user?.role === 'PARENT' ? '/parent' :
+                    '/assistant'
+                  }
+                  className="relative group cursor-pointer"
+                  onClick={handleProfileButtonClick}
+                >
+                  {/* Анимированный фон */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-xl blur-sm group-hover:blur-none transition-all duration-300"></div>
+                  
+                  {/* Основной контейнер */}
+                  <div className={`relative flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-slate-800/60 via-slate-700/60 to-slate-800/60 border border-slate-600/40 rounded-xl backdrop-blur-md group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-cyan-500/20 group-hover:border-blue-400/50 transition-all duration-300 animate-user-greeting-glow animate-user-greeting-float group-hover:scale-105 ${isProfileButtonPressed ? 'animate-profile-button-press' : ''}`}>
+                    {/* Декоративные элементы */}
+                    <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-blue-400 rounded-full opacity-60 group-hover:opacity-100 group-hover:animate-pulse"></div>
+                    <div className="absolute bottom-1 left-1 w-1 h-1 bg-purple-400 rounded-full opacity-40 group-hover:opacity-80 group-hover:animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                    
+                    {/* Иконка пользователя */}
+                    <div className="relative">
+                      <User className="w-4 h-4 text-slate-300 group-hover:text-blue-300 transition-colors duration-300" />
+                      <div className="absolute inset-0 w-4 h-4 bg-blue-400/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    
+                    {/* Текст приветствия */}
+                    <span className="hidden sm:block text-slate-300 group-hover:text-white font-medium transition-colors duration-300">
+                      Привет, {session.user?.name}!
                     </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                  </Button>
+                    
+                    {/* Стрелка для указания кликабельности */}
+                    <div className="hidden sm:block ml-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                      <svg className="w-3 h-3 text-slate-400 group-hover:text-blue-300 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
                 </Link>
                 <Button 
                   variant="ghost" 
@@ -194,10 +227,35 @@ export default function HomePage() {
             
             {/* Приветственное сообщение для авторизованных пользователей */}
             {showWelcomeMessage && (
-              <div className="mb-6 p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl backdrop-blur-sm animate-fade-in-up">
-                <div className="flex items-center justify-center space-x-2 text-green-100">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="font-medium">Регистрация успешна! Добро пожаловать!</span>
+              <div className="mb-8 relative">
+                {/* Анимированный фон с градиентом */}
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-emerald-500/30 to-teal-500/30 rounded-2xl blur-xl animate-pulse"></div>
+                
+                {/* Основной контейнер */}
+                <div className="relative bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 border border-green-400/40 rounded-2xl backdrop-blur-md p-6 shadow-2xl shadow-green-500/20 animate-welcome-slide-in animate-welcome-glow">
+                  {/* Дополнительные декоративные элементы */}
+                  <div className="absolute top-0 left-0 w-full h-full rounded-2xl bg-gradient-to-r from-green-400/10 to-emerald-400/10"></div>
+                  
+                  {/* Светящиеся точки */}
+                  <div className="absolute top-2 right-2 w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
+                  <div className="absolute bottom-2 left-2 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" style={{animationDelay: '0.5s'}}></div>
+                  
+                  {/* Контент */}
+                  <div className="relative flex items-center justify-center space-x-3 text-green-100">
+                    <div className="relative">
+                      <CheckCircle className="w-6 h-6 text-green-300" />
+                      <div className="absolute inset-0 w-6 h-6 bg-green-400 rounded-full blur-sm opacity-50 animate-pulse"></div>
+                    </div>
+                    <span className="font-semibold text-lg">Регистрация успешна! Добро пожаловать!</span>
+                    <div className="flex space-x-1">
+                      <div className="w-1 h-1 bg-green-300 rounded-full animate-bounce"></div>
+                      <div className="w-1 h-1 bg-emerald-300 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                      <div className="w-1 h-1 bg-teal-300 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    </div>
+                  </div>
+                  
+                  {/* Нижняя полоска с градиентом */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 rounded-b-2xl"></div>
                 </div>
               </div>
             )}

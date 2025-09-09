@@ -618,3 +618,102 @@
   100% { background-position: 0% 50%; }
 }
 
+/* Анимация для приветственного сообщения */
+@keyframes welcome-glow {
+  0% {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 40px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.5), 0 0 60px rgba(16, 185, 129, 0.3), 0 0 80px rgba(20, 184, 166, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 40px rgba(16, 185, 129, 0.2);
+  }
+}
+
+@keyframes welcome-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-welcome-glow {
+  animation: welcome-glow 3s ease-in-out infinite;
+}
+
+.animate-welcome-slide-in {
+  animation: welcome-slide-in 0.8s ease-out forwards;
+}
+
+/* Анимация для блока приветствия пользователя */
+@keyframes user-greeting-glow {
+  0% {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2), 0 0 20px rgba(139, 92, 246, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3), 0 0 30px rgba(139, 92, 246, 0.2), 0 0 40px rgba(6, 182, 212, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2), 0 0 20px rgba(139, 92, 246, 0.1);
+  }
+}
+
+@keyframes user-greeting-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.animate-user-greeting-glow {
+  animation: user-greeting-glow 4s ease-in-out infinite;
+}
+
+.animate-user-greeting-float {
+  animation: user-greeting-float 3s ease-in-out infinite;
+}
+
+/* Дополнительные анимации для кнопки профиля */
+@keyframes profile-button-press {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes profile-button-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  75% {
+    transform: translateX(1px);
+  }
+}
+
+.animate-profile-button-press {
+  animation: profile-button-press 0.2s ease-in-out;
+}
+
+.animate-profile-button-shake {
+  animation: profile-button-shake 0.5s ease-in-out;
+}
+
